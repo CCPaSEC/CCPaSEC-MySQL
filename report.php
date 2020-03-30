@@ -32,8 +32,10 @@ try {
  print "<caption>Values in yellow are marginally out of normal range</caption>";
  print "<caption>Values in orange are out of normal range</caption>";
     print "<tr>";
-        print "<th>Site ID</th>";
         print "<th>Date</th>";
+        print "<th>Location</th>";
+        print "<th>Stream</th>";
+        print "<th>Team</th>";
         print "<th>pH</th>";
         print "<th>Conductivity</th>";
         print "<th>DO</th>";
@@ -43,20 +45,24 @@ try {
         print "<th>Phosphates</th>";
     print "</tr>";
 
-$q = $db->query("SELECT site_id,Date,pH,Conductivity,DO as Oxy,Alkalinity,Nitrates,Sulphates,Phosphates FROM chemical_data where Date>='$dt' and Date<DATE_ADD('$dt',INTERVAL 1 MONTH) order by Date");
+$q = $db->query("SELECT Date,Location,Stream,Team,pH,Conductivity,DO as Oxy,Alkalinity,Nitrates,Sulphates,Phosphates FROM sites,chemical_data where site_id=ID and Date>='$dt' and Date<DATE_ADD('$dt',INTERVAL 1 MONTH) order by Date,Team");
 while ($row = $q->fetch()) {
     print "<tr>";
-        print "<td>$row[site_id]</td>";
         print "<td>$row[Date]</td>";
-        if ($row[pH] < 6 or $row[pH] > 9) {print "<td style='background-color: orange'>$row[pH]</td>";} else {print "<td>$row[pH]</td>";} 
-        if ($row[Conductivity] < 150 or $row[Conductivity] > 500 ) {print "<td style='background-color: orange'>$row[Conductivity]</td>";} else {print "<td>$row[Conductivity]</td>";} 
-        if ($row[Oxy] < 5 ) {print "<td style='background-color: orange'>$row[Oxy]</td>";} else {print "<td>$row[Oxy]</td>";} 
-        if ($row[Alkalinity] > 400 ) {print "<td style='background-color: orange'>$row[Alkalinity]</td>";} else {print "<td>$row[Alkalinity]</td>";} 
-        if ($row[Nitrates] > 4.4 ) {print "<td style='background-color: orange'>$row[Nitrates]</td>";} else {print "<td>$row[Nitrates]</td>";} 
-        if ($row[Sulphates] > 250 ) {print "<td style='background-color: orange'>$row[Sulphates]</td>";} else {print "<td>$row[Sulphates]</td>";} 
-        if ($row[Phosphates] > 0.03 and $row[Phosphates] < 0.3 ) {print "<td style='background-color: yellow'>$row[Phosphates]</td>";
+        print "<td>$row[Location]</td>";
+        print "<td>$row[Stream]</td>";
+        print "<td>$row[Team]</td>";
+        if ($row[pH] < 6 or $row[pH] > 9) {print "<td style='background-color: orange'>$row[pH]</td>";} else {print "<td style='background-color: lightgreen'>$row[pH]</td>";} 
+        if ($row[Conductivity] < 150 or $row[Conductivity] > 500 ) {print "<td style='background-color: orange'>$row[Conductivity]</td>";} else {print "<td style='background-color: lightgreen'>$row[Conductivity]</td>";} 
+        if ($row[Oxy] < 5 and $row[Oxy] > 0 ) {print "<td style='background-color: orange'>$row[Oxy]</td>";} else if($row[Oxy] >=5){print "<td style='background-color: lightgreen'>$row[Oxy]</td>";} else {print "<td>$row[Oxy]</td>";}
+        if ($row[Alkalinity] > 400 ) {print "<td style='background-color: orange'>$row[Alkalinity]</td>";} else {print "<td style='background-color: lightgreen'>$row[Alkalinity]</td>";} 
+        if ($row[Nitrates] > 4.4 ) {print "<td style='background-color: orange'>$row[Nitrates]</td>";} else if($row[Nitrates] <= 4.4 and $row[Nitrates] > 0){print "<td style='background-color: lightgreen'>$row[Nitrates]</td>";} else {print "<td>$row[Nitrates]</td>";} 
+        if ($row[Sulphates] > 250 ) {print "<td style='background-color: orange'>$row[Sulphates]</td>";} else if($row[Sulphates] <=250 and $row[Sulphates] > 0){print "<td style='background-color: lightgreen'>$row[Sulphates]</td>";} else {print "<td>$row[Sulphates]</td>";} 
+        if ($row[Phosphates] > 0.03 and $row[Phosphates] <= 0.3 ) {print "<td style='background-color: yellow'>$row[Phosphates]</td>";
         } else if ($row[Phosphates] > 0.3){
            print "<td style='background-color: orange'>$row[Phosphates]</td>";
+        } else if ($row[Phosphates] > 0 and $row[Phosphates] <= 0.03){
+           print "<td style='background-color: lightgreen'>$row[Phosphates]</td>";
         } else {
            print "<td>$row[Phosphates]</td>"; 
         }
