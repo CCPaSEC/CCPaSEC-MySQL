@@ -38,7 +38,7 @@ try {
         print "<th>Team</th>";
         print "<th>pH</th>";
         print "<th>Conductivity</th>";
-        print "<th>DO</th>";
+        print "<th>Dissolved O2</th>";
         print "<th>Alkalinity</th>";
         print "<th>Nitrates</th>";
         print "<th>Sulphates</th>";
